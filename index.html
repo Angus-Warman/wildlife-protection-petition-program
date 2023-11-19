@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Wildlife Protection Petition Program</title>
+</head>
+
+<style>
+	@media print {
+		@page { margin: 0; }
+		body { margin: 1.6cm; }
+	}
+</style>
+
+<body>
+<p><b>No personal information is transmitted using this webpage, all content is stored in your browser only.</b></p>
+
+<p>
+	<t>Name: </t><input type="text" id="name" oninput="update()" value="[your name here]" /><br>
+	<t>Location of incident: </t><input type="text" id="incident_location" oninput="update()" value="a nearby street" style="width: 200px" /><br>
+	<t>Date of incident: </t><input type="date" id="incident_date" oninput="update()"><br>
+	<t>Animal: </t><select id="animal" oninput="update()">
+	  <option>possum</option>
+	  <option>bird</option>
+	  <option>kangaroo</option>
+	</select>
+</p>
+
+<button onclick="createEmail()">Send Email</button>
+
+<button onclick="printLetter()">Create Letter</button>
+
+<p id="preview" />
+
+</body>
+</html>
+
+<script>
+	"use strict;"
+
+	function loadDefaults() {
+		document.getElementById("incident_date").valueAsDate = new Date()
+		update()
+	}
+
+	function update() {
+		document.getElementById("preview").innerHTML = getText()
+	}
+
+	function getText() {
+		var recipient = "Council Member"
+		var name = document.getElementById("name").value
+		var description = "a concerned citizen"
+		var time = getTime()
+		var animal = document.getElementById("animal").value
+		var location = document.getElementById("incident_location").value
+		var council = "Nedlands"
+
+		var letterText = `Dear ${recipient},<br>
+			<br>
+			My name is ${name}, I am ${description} and have some sad news.<br>
+			On ${time} I found a dead ${animal} on the road.<br>
+			This happened at ${location}, part of your jurisdiction.<br>
+			This shocking death has reduced the local population of animals in your area. The loss of a species has a cascading effect on other species. Creating far-reaching consequences for the health and stability of an ecosystem.<br>
+			The council of ${council} can help by taking action:
+			<ol>
+				<li><b>Implement wildlife crossing structures:</b> Constructing bridges or tunnels specifically designed for wildlife to safely cross roads can significantly reduce the risk of collisions with vehicles.</li>
+				<li><b>Install wildlife warning signs:</b> Clearly marked signs indicating known wildlife crossing areas can alert drivers to exercise caution and reduce speed, lowering the likelihood of road-related wildlife fatalities.</li>
+				<li><b>Implement speed limits in critical zones:</b> Enforce reduced speed limits in areas identified as high-risk for wildlife crossings, providing drivers with more reaction time to avoid collisions with animals.</li>
+				<li><b>Educate the public:</b> Launch public awareness campaigns to inform local residents about wildlife crossing habits, encouraging responsible driving and the importance of vigilance in areas prone to animal activity.</li>
+				<li><b>Habitat preservation and restoration:</b> Protect and restore natural habitats by preserving green spaces and implementing measures that discourage wildlife from venturing onto roads, minimizing the potential for road-related fatalities.</li>
+			</ol>
+			<br>
+			Sincerely,<br>
+			${name}`
+
+		return letterText
+
+	}
+
+	function getTime() {
+		var dateText = document.getElementById("incident_date").value
+		var time = Date.parse(dateText)
+		var date = new Date(time)
+
+		var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+		var day = days[date.getDay()]
+
+		return day
+	}
+
+	function getLetterText() {
+		var address = "CEO, Company Name<br>123 Address St<br>Anytown, ST 12345<br>"
+		return address + "<br><br>" + getText()
+	}
+
+	function getEmailText() {
+		var baseText = getText()
+
+		return baseText.replaceAll("<br>", "<br />")
+	}
+
+	function createEmail() {
+		var email = "test@gmail.com"
+		var cc = "possumsalute@gmail.com"
+		var subject = "Wildlife Protection in your shire"
+		var body = getEmailText()
+
+		window.open(`mailto:${email}?cc=${cc}&subject=${subject}&body=${body}`)
+	}
+
+	function printLetter() {
+		var printContent = getLetterText()
+		var originalContent = document.body.innerHTML
+		document.body.innerHTML = printContent
+		window.print()
+		document.body.innerHTML = originalContent
+	}
+
+loadDefaults()
+
+</script>
