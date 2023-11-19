@@ -95,8 +95,16 @@
 
 	function getEmailText() {
 		var baseText = getText()
+		var newLine = "%0D"
+		var plainText = baseText.replaceAll("<li>", "%09- ")
+								.replaceAll("<br>", newLine)
+								.replaceAll("<ol>", newLine)
+								.replaceAll("</li>", newLine)
+								.replaceAll("<b>", "")
+								.replaceAll("</b>", "")
+								.replaceAll("</ol>", "")
 
-		return baseText.replaceAll("<br>", "<br />")
+		return plainText
 	}
 
 	function createEmail() {
@@ -104,8 +112,11 @@
 		var cc = "possumsalute@gmail.com"
 		var subject = "Wildlife Protection in your shire"
 		var body = getEmailText()
+		var mailto = `mailto:${email}?cc=${cc}&subject=${subject}&body=${body}`
 
-		window.open(`mailto:${email}?cc=${cc}&subject=${subject}&body=${body}`)
+		var mailLink = document.createElement("a") // Using window.open() creates a new blank tab
+		mailLink.href = mailto
+		mailLink.click()
 	}
 
 	function printLetter() {
